@@ -875,7 +875,27 @@
   </div>
 
   <script>
-    // Simulated user database
+    // Load data from localStorage
+    function loadData() {
+      if (localStorage.getItem('users')) {
+        users = JSON.parse(localStorage.getItem('users'));
+      }
+      if (localStorage.getItem('messages')) {
+        messages = JSON.parse(localStorage.getItem('messages'));
+      }
+      if (currentUser) {
+        messageSection.style.display = 'block';
+        displayMessages();
+      }
+    }
+
+    // Save data to localStorage
+    function saveData() {
+      localStorage.setItem('users', JSON.stringify(users));
+      localStorage.setItem('messages', JSON.stringify(messages));
+    }
+
+    // Initialize data
     let users = [];
     let messages = [];
     let currentUser = null;
@@ -886,6 +906,9 @@
     const messageForm = document.getElementById('messageForm');
     const messageBoard = document.getElementById('messageBoard');
     const messageSection = document.getElementById('messageSection');
+
+    // Load initial data
+    loadData();
 
     // Create Account
     createAccountForm.addEventListener('submit', function(e) {
@@ -899,6 +922,7 @@
       }
 
       users.push({ username, password });
+      saveData();
       alert('Account created successfully!');
       createAccountForm.reset();
     });
@@ -913,7 +937,6 @@
       
       if (user) {
         currentUser = user;
-        alert('Logged in successfully!');
         messageSection.style.display = 'block';
         loginForm.reset();
         displayMessages();
@@ -934,6 +957,7 @@
           timestamp: new Date().toLocaleString()
         };
         messages.push(message);
+        saveData();
         displayMessages();
         messageForm.reset();
       } else {
